@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MVC.Data;
 using Microsoft.EntityFrameworkCore;
+using MVC.LoggerMessage;
+using Microsoft.Extensions.Logging;
 
 namespace MVC
 {
@@ -28,11 +30,13 @@ namespace MVC
             services.AddControllersWithViews();
 
             services.AddDbContext<MvcMovieContext>(options =>  options.UseSqlServer(Configuration.GetConnectionString("MvcMovieContext")));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+          
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -48,14 +52,17 @@ namespace MVC
 
             app.UseRouting();
 
+            app.UseLogger();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                   pattern: "{controller=Home}/{action=Index}/{id?}");
+                   pattern: "{controller=Movies}/{action=Index}/{id?}");
             });
+            
         }
     }
 }
